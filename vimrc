@@ -15,7 +15,7 @@ set showmatch
 set showcmd
 set incsearch
 set autowrite
-set tabstop=2 sw=2
+set tabstop=4 sw=4
 set expandtab
 set wildmenu
 filetype indent plugin on
