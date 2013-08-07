@@ -2,7 +2,7 @@ call pathogen#infect()
 call pathogen#helptags()
 "set rtp+=~/.vim/bundle/vundle/
 "call vundle#rc()
-
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
 "Bundle 'gmarik/vundle'
 "Bundle 'klen/python-mode'
 
@@ -65,6 +65,10 @@ let g:UltiSnipsListSnippets = "<c-tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
+" Syntastic options
+let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': [], 'passive_filetypes': ['html']}
+let g:syntastic_python_checkers = ['flake8']
+"let g:syntastic_check_on_open = 1
 " Python-mode
 " Activate rope
 " Keys:
