@@ -2,7 +2,7 @@ call pathogen#infect()
 call pathogen#helptags()
 "set rtp+=~/.vim/bundle/vundle/
 "call vundle#rc()
-set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+"set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
 "Bundle 'gmarik/vundle'
 "Bundle 'klen/python-mode'
 
