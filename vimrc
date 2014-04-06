@@ -1,32 +1,121 @@
+autocmd! bufwritepost .vimrc source %
+
 call pathogen#infect()
 call pathogen#helptags()
-"set rtp+=~/.vim/bundle/vundle/
-"call vundle#rc()
-"set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
-"Bundle 'gmarik/vundle'
-"Bundle 'klen/python-mode'
 
-syn on
+" Better copy and paste
+" press F2 before pasting large block of code
+set pastetoggle=<F2>
+set clipboard=unnamed
 
-set showmatch
-set nocompatible
+" Remap leader key (testing)
+let mapleader = ","
+
+" Remove highlight of last search
+noremap <C-n> :nohl<CR>
+vnoremap <C-n> :nohl<CR>
+inoremap <C-n> :nohl<CR>
+
+" Quick save
+noremap <C-Z> :update<CR>
+vnoremap <C-Z> <C-C>:update<CR>
+inoremap <C-Z> <C-O>:update<CR>
+
+
+" Move around windows
+map <c-j> <c-w>j
+map <c-k> <c-w>k
+map <c-l> <c-w>l
+map <c-h> <c-w>h
+
+" Easier moving between tabs
+map <Leader>n <esc>:tabprevious<CR>
+map <Leader>m <esc>:tabnext<CR>
+
+" map sort function key
+vnoremap <Leader>s :sort<CR>
+
+" Easier code block moving
+vnoremap < <gv
+vnoremap > >gv
+
+" Show whitespace
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+au InsertLeave * match ExtraWhitespace /\s\+$/
+
+" Color Scheme
+colorscheme molokai
+
+" Enable syntax highlighting
+filetype off
+filetype plugin indent on
+syntax on
+
+" Show line numbers and length
+set number
+set tw=79
+set nowrap
+set fo-=t
+set colorcolumn=80
+
+" Easier formatting of paragraphs
+vmap Q gq
+nmap Q gqap
+
+" Useful settings
+set history=700
+set undolevels=700
+
+" Tabs and Spaces
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set shiftround
+set expandtab
+
+" Case insensitive search
 set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" Disable backup and swap files (testing)
+set nobackup
+set nowritebackup
+set noswapfile
+
+" powerline options
+set laststatus=2
+
+" Settings for ctrlp
+let g:ctrlp_max_height = 30
+set wildignore+=*.pyc
+set wildignore+=*_build/*
+set wildignore+=*/coverage/*
+
+au! FileType python setl nosmartindent
+au! FileType python map <buffer> <S-e> :w<CR>:!/usr/bin/env python %<CR>
+
+" Code folding
+set foldmethod=indent
+
+" Python template testing
+augroup BufNewFileFromTemplate
+au!
+autocmd BufNewFile * silent! 0r $HOME/.vim/templates/%:e.tpl
+autocmd BufNewFile * normal! G"_dd1G
+autocmd BufNewFile * silent! match Todo /TODO/
+augroup BufNewFileFromTemplate
+
+set nocompatible
 set cindent
 set autoindent
 set smartindent
-set ignorecase
-set smartcase
-set ls=2
 set backspace=indent,eol,start
 set showmatch
 set showcmd
-set incsearch
 set autowrite
-set tabstop=4 sw=4
-set expandtab
 set wildmenu
-filetype indent plugin on
-set laststatus=2
 set noerrorbells
 set relativenumber
 set undofile
@@ -39,17 +128,12 @@ set showmode
 set ttyfast
 set ruler
 set gdefault
-set wrap
-set textwidth=79
 set formatoptions=qrn1
-set colorcolumn=85
 "colorscheme herald
 "set background=light
-colorscheme molokai
 "colorscheme vividchalk
 set gfn=Monospace\ 12
-nnoremap <C-Left> :tabprevious<CR>
-nnoremap <C-Right> :tabnext<CR>
+"set gfn=CPMono\ v07
 nnoremap <silent> <A-Left> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
 nnoremap <silent> <A-Right> :execute 'silent! tabmove ' . tabpagenr()<CR>
 nnoremap <silent> <Leader>tb :CommandTBuffer<CR>
