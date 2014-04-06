@@ -93,8 +93,8 @@ set wildignore+=*.pyc
 set wildignore+=*_build/*
 set wildignore+=*/coverage/*
 
-au! FileType python setl nosmartindent
-au! FileType python map <buffer> <S-e> :w<CR>:!/usr/bin/env python %<CR>
+" au! FileType python setl nosmartindent
+" au! FileType python map <buffer> <S-e> :w<CR>:!/usr/bin/env python %<CR>
 
 " Code folding
 set foldmethod=indent
