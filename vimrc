@@ -1,112 +1,191 @@
 autocmd! bufwritepost .vimrc source %
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
 
-call pathogen#infect()
-call pathogen#helptags()
+call plug#begin('~/.vim/plugged')
+" Automatically install missing plugins on startup
+if !empty(filter(copy(g:plugs), '!isdirectory(v:val.dir)'))
+  autocmd VimEnter * PlugInstall | q
+endif
 
-" Better copy and paste
-" press F2 before pasting large block of code
-set pastetoggle=<F2>
+" My plugins
+Plug 'vim-airline/vim-airline'
+Plug 'tpope/vim-fugitive'
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree'
+Plug 'wincent/Command-T'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
+Plug 'klen/python-mode'
+Plug 'scrooloose/syntastic'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'michalbachowski/vim-wombat256mod'
+
+call plug#end()
+
+"call pathogen#infect()
+"call pathogen#helptags()
+
+" ---------------------------------------------------------------------------
+" General
+" ---------------------------------------------------------------------------
+
+set nocompatible                      " essential
+set history=1000                      " lots of command line history
+set cf                                " error files / jumping
+set ffs=unix,dos,mac                  " support these files
+set isk+=_,$,@,%,#,-                  " none word dividers
+set viminfo='1000,f1,:100,@100,/20
+set modeline                          " make sure modeline support is enabled
+set autoread                          " reload files (no local changes only)
+set tabpagemax=50                     " open 50 tabs max
+set relativenumber
+
+filetype plugin indent on
+syntax on
+
+" ---------------------------------------------------------------------------
+" Colors / Theme
+" ---------------------------------------------------------------------------
+"colorscheme molokai
+"colorscheme  VisualStudioDark
+"colorscheme jellybeans
+colorscheme wombat256mod
+"colorscheme railscasts
+
+
+" ---------------------------------------------------------------------------
+"  Highlight
+" ---------------------------------------------------------------------------
+
+highlight Comment         ctermfg=DarkGrey guifg=#444444
+highlight StatusLineNC    ctermfg=Black ctermbg=DarkGrey cterm=bold
+highlight StatusLine      ctermbg=Black ctermfg=LightGrey
+
+" ----------------------------------------------------------------------------
+"   Highlight Trailing Whitespace
+" ----------------------------------------------------------------------------
+
+set list listchars=trail:.,tab:>.
+highlight SpecialKey ctermfg=DarkGray ctermbg=Black
+
+" ----------------------------------------------------------------------------
+"  Backups
+" ----------------------------------------------------------------------------
+
+set nobackup                           " do not keep backups after close
+set nowritebackup                      " do not keep a backup while working
+set noswapfile                         " don't keep swp files either
+set backupdir=$HOME/.vim/backup        " store backups under ~/.vim/backup
+set backupcopy=yes                     " keep attributes of original file
+set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*
+set directory=~/.vim/swap,~/tmp,.      " keep swp files under ~/.vim/swap
+
+" ----------------------------------------------------------------------------
+"  UI
+" ----------------------------------------------------------------------------
+
+set ruler                  " show the cursor position all the time
+set noshowcmd              " don't display incomplete commands
+set nolazyredraw           " turn off lazy redraw
+set number                 " line numbers
+set wildmenu               " turn on wild menu
+set wildmode=list:longest,full
+set ch=2                   " command line height
+set backspace=2            " allow backspacing over everything in insert mode
+set whichwrap+=<,>,h,l,[,] " backspace and cursor keys wrap to
+set shortmess=filtIoOA     " shorten messages
+set report=0               " tell us about changes
+set nostartofline          " don't jump to the start of line when scrolling
+
+" ----------------------------------------------------------------------------
+" Visual Cues
+" ----------------------------------------------------------------------------
+
+set showmatch              " brackets/braces that is
+set mat=5                  " duration to show matching brace (1/10 sec)
+set incsearch              " do incremental searching
+set laststatus=2           " always show the status line
+set ignorecase             " ignore case when searching
+set nohlsearch             " don't highlight searches
+set visualbell             " shut the fuck up
+
+" ----------------------------------------------------------------------------
+" Text Formatting
+" ----------------------------------------------------------------------------
+
+set pastetoggle=<F2>       " press F2 before pasting large blocks of code
 set clipboard=unnamed
+set cindent
+set autoindent             " automatic indent new lines
+set smartindent            " be smart about it
+set nowrap                 " do not wrap lines
+set softtabstop=4          " yep, two
+set shiftwidth=4           " ..
+set tabstop=4
+set expandtab              " expand tabs to spaces
+set nosmarttab             " fuck tabs
+set formatoptions+=qrn1       " support for numbered/bullet lists
+"set textwidth=80           " wrap at 80 chars by default
+set virtualedit=block      " allow virtual edit in visual block ..
 
-" Remap leader key (testing)
+" ----------------------------------------------------------------------------
+"  Mappings
+" ----------------------------------------------------------------------------
+" remap <LEADER> to ',' (instead of '\')
 let mapleader = ","
 
-" Remove highlight of last search
-noremap <C-n> :nohl<CR>
-vnoremap <C-n> :nohl<CR>
-inoremap <C-n> :nohl<CR>
+"====[ Swap : and ; to make colon commands easier to type ]======
 
-" Quick save
-noremap <C-Z> :update<CR>
-vnoremap <C-Z> <C-C>:update<CR>
-inoremap <C-Z> <C-O>:update<CR>
+nnoremap  ;  :
+nnoremap  :  ;
 
 
-" Move around windows
-map <c-j> <c-w>j
-map <c-k> <c-w>k
-map <c-l> <c-w>l
-map <c-h> <c-w>h
+"====[ Swap v and CTRL-V, because Block mode is more useful that Visual mode "]======
 
-" Easier moving between tabs
-map <Leader>n <esc>:tabprevious<CR>
-map <Leader>m <esc>:tabnext<CR>
+nnoremap    v   <C-V>
+nnoremap <C-V>     v
 
-" map sort function key
-vnoremap <Leader>s :sort<CR>
+vnoremap    v   <C-V>
+vnoremap <C-V>     v
 
 " Easier code block moving
 vnoremap < <gv
 vnoremap > >gv
 
-" Show whitespace
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-au InsertLeave * match ExtraWhitespace /\s\+$/
+" reflow paragraph with Q in normal and visual mode
+nnoremap Q gqap
+vnoremap Q gq
 
-" Color Scheme
-colorscheme molokai
+" sane movement with wrap turned on
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+nnoremap <Down> gj
+nnoremap <Up> gk
+vnoremap <Down> gj
+vnoremap <Up> gk
+inoremap <Down> <C-o>gj
+inoremap <Up> <C-o>gk
 
-" Enable syntax highlighting
-filetype off
-filetype plugin indent on
-syntax on
+nnoremap / /\v
+vnoremap / /\v
+nnoremap <tab> %
+vnoremap <tab> %
+au FocusLost * :wa
+inoremap jj <ESC>
 
-" Show line numbers and length
-set number
-set tw=79
-set nowrap
-set fo-=t
-highlight ColorColumn ctermbg=magenta
-call matchadd('ColorColumn', '\%81v', 100)
 
-" Easier formatting of paragraphs
-vmap Q gq
-nmap Q gqap
-
-" Useful settings
-set history=700
-set undolevels=700
-
-" Tabs and Spaces
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set shiftround
-set expandtab
-
-" Case insensitive search
-set hlsearch
-set incsearch
-set ignorecase
-set smartcase
-
-" Disable backup and swap files (testing)
-"set nobackup
-"set nowritebackup
-"set noswapfile
-
-" powerline options
-set laststatus=2
-
-" Settings for ctrlp
-let g:ctrlp_max_height = 30
-set wildignore+=*.pyc
-set wildignore+=*_build/*
-set wildignore+=*/coverage/*
-
-" au! FileType python setl nosmartindent
-" au! FileType python map <buffer> <S-e> :w<CR>:!/usr/bin/env python %<CR>
-
-" Code folding
-set foldmethod=indent
-
-" Python template testing
-augroup BufNewFileFromTemplate
-au!
-autocmd BufNewFile * silent! 0r $HOME/.vim/templates/%:e.tpl
-autocmd BufNewFile * normal! G"_dd1G
-autocmd BufNewFile * silent! match Todo /TODO/
-augroup BufNewFileFromTemplate
+" do not menu with left / right in command line
+cnoremap <Left> <Space><BS><Left>
+cnoremap <Right> <Space><BS><Right>
 
 " Highlighting matches
 nnoremap <silent> n   n:call HLNext(0.4)<cr>
@@ -124,108 +203,75 @@ function! HLNext (blinktime)
     redraw
 endfunction
 
-"====[ Make tabs, trailing whitespace, and non-breaking spaces visible ]======
+" ----------------------------------------------------------------------------
+"  Auto Commands
+" ----------------------------------------------------------------------------
 
-exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
-set list
+" jump to last position of buffer when opening
+au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") |
+                         \ exe "normal g'\"" | endif
 
-"====[ Swap : and ; to make colon commands easier to type ]======
+" don't use cindent for javascript
+autocmd FileType javascript setlocal nocindent
 
-nnoremap  ;  :
-nnoremap  :  ;
+" ----------------------------------------------------------------------------
+"  LookupFile
+" ----------------------------------------------------------------------------
 
+let g:LookupFile_TagExpr = '".ftags"'
+let g:LookupFile_MinPatLength = 2
+let g:LookupFile_ShowFiller = 0                  " fix menu flashiness
+let g:LookupFile_PreservePatternHistory = 1      " preserve sorted history?
+let g:LookupFile_PreserveLastPattern = 0         " start with last pattern?
 
-"====[ Swap v and CTRL-V, because Block mode is more useful that Visual mode "]======
+nmap <unique> <silent> <D-f> <Plug>LookupFile
+imap <unique> <silent> <D-f> <C-O><Plug>LookupFile
 
-nnoremap    v   <C-V>
-nnoremap <C-V>     v
+" ---------------------------------------------------------------------------
+"  sh config
+" ---------------------------------------------------------------------------
 
-vnoremap    v   <C-V>
-vnoremap <C-V>     v
+au Filetype sh,bash set ts=4 sts=4 sw=4 expandtab
+let g:is_posix = 1
 
-set nocompatible
-set cindent
-set autoindent
-set smartindent
-set backspace=indent,eol,start
-set showmatch
-set showcmd
-set autowrite
-set wildmenu
-set noerrorbells
-set relativenumber
-set undofile
-set modelines=0
-set encoding=utf-8
-set scrolloff=3
-"set visualbell
-set hidden
-set showmode
-set ttyfast
-set ruler
-set gdefault
-set formatoptions=qrn1
-"colorscheme herald
-"set background=light
-"colorscheme vividchalk
-set gfn=Monospace\ 12
-"set gfn=CPMono\ v07
-nnoremap <silent> <A-Left> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
-nnoremap <silent> <A-Right> :execute 'silent! tabmove ' . tabpagenr()<CR>
-nnoremap <silent> <Leader>tb :CommandTBuffer<CR>
-nnoremap / /\v
-vnoremap / /\v
-nnoremap <tab> %
-vnoremap <tab> %
-au FocusLost * :wa
-inoremap jj <ESC>
-"" UltiSnips
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsListSnippets = "<c-tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+" ---------------------------------------------------------------------------
+" html config
+" ---------------------------------------------------------------------------
 
-" Syntastic options
-let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': [], 'passive_filetypes': ['html']}
-let g:syntastic_python_checkers = ['flake8']
-"let g:syntastic_check_on_open = 1
-" Python-mode
-" Activate rope
-" Keys:
-" K             Show python docs
-" <Leader>b     Set, unset breakpoint (g:pymode_breakpoint enabled)
-" [[            Jump on previous class or function (normal, visual, operator
-" modes)
-" ]]            Jump on next class or function (normal, visual, operator
-" modes)
-" [M            Jump on previous class or method (normal, visual, operator
-" modes)
-" ]M            Jump on next class or method (normal, visual, operator modes)
-" let g:pymode = 1
-let g:pymode_rope = 0
-"
-" " Documentation
-let g:pymode_doc = 1
-let g:pymode_doc_key = 'K'
-"
-" "Linting
-let g:pymode_lint = 1
-let g:pymode_lint_checker = "pyflakes,pep8"
-" " Auto check on save
-let g:pymode_lint_write = 1
-"
-" " Support virtualenv
-let g:pymode_virtualenv = 1
-"
-" " Enable breakpoints plugin
-let g:pymode_breakpoint = 1
-let g:pymode_breakpoint_key = '<leader>b'
-"
-" " syntax highlighting
-let g:pymode_syntax = 1
-let g:pymode_syntax_all = 1
-let g:pymode_syntax_indent_errors = g:pymode_syntax_all
-let g:pymode_syntax_space_errors = g:pymode_syntax_all
-"
-" " Don't autofold code
-let g:pymode_folding = 0
+let g:html_indent_script1 = "inc"
+let g:html_indent_style1 = "inc"
+let g:html_indent_inctags = "address,article,aside,audio,blockquote,canvas,dd,div,dl,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,main,nav,noscript,ol,output,p,pre,section,table,tfoot,ul,video"
+
+" ---------------------------------------------------------------------------
+"  Misc mappings
+" ---------------------------------------------------------------------------
+
+" duplicate current tab with same file+line
+map ,t :tabnew %<CR>
+
+" open directory dirname of current file, and in new tab
+map ,d :e %:h/<CR>
+map ,dt :tabnew %:h/<CR>
+
+" open gf under cursor in new tab
+map ,f :tabnew <cfile><CR>
+
+" open tag under cursor in new tab
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+
+" ---------------------------------------------------------------------------
+"  Strip all trailing whitespace in file
+" ---------------------------------------------------------------------------
+
+function! StripWhitespace ()
+    exec ':%s/ \+$//gc'
+endfunction
+map ,s :call StripWhitespace ()<CR>
+
+" --------------------------------------------------------------------------
+" ManPageView
+" --------------------------------------------------------------------------
+
+let g:manpageview_pgm= 'man -P "/usr/bin/less -is"'
+let $MANPAGER = '/usr/bin/less -is'
+
